@@ -1,0 +1,55 @@
+Winter 2022 Data Science Intern Challenge 
+
+
+Please complete the following questions, and provide your thought process/work. You can attach your work in a text file, link, etc. on the application page. Please ensure answers are easily visible for reviewers!
+
+
+
+
+Question 1: Given some sample data, write a program to answer the following: click here to access the required data set
+
+
+On Shopify, we have exactly 100 sneaker shops, and each of these shops sells only one model of shoe. We want to do some analysis of the average order value (AOV). When we look at orders data over a 30 day window, we naively calculate an AOV of $3145.13. Given that we know these shops are selling sneakers, a relatively affordable item, something seems wrong with our analysis. 
+
+
+1. Think about what could be going wrong with our calculation. Think about a better way to evaluate this data. 
+The AOV of $3145.13 was most likely gotten by just taking the mean of the order_amount column. This is problematic because of outliers like 704000. This user could be buying for wholesale purposes and would not reflect the buying behaviour of regular sneaker purchases. The Standard Deviation of Order Amount is 41282.54, this shows that most of the values are very far from the average. Thus while the average was calculated properly, it does not give an accurate depiction of the average buyer. 
+
+2. What metric would you report for this dataset?
+A better metric would be the Unit Order Amount. The largest Order Amount came from an Order of 2000 items, this evaluates to a unit order amount of $352. The Unit Order Amount scales the amount from each buyer, thus providing a more accurate depiction of the average buyer. It also has a much smaller standard deviation of $2441.96.
+
+3. What is its value?
+The Unit Order Amount is $387.74
+
+
+
+
+Question 2: For this question you’ll need to use SQL. Follow this link to access the data set required for the challenge. Please use queries to answer the following questions. Paste your queries along with your final numerical answers below.
+
+
+1. How many orders were shipped by Speedy Express in total?
+SELECT * FROM [Orders]
+WHERE ShipperID == 1
+
+Ans = 54
+
+
+2. What is the last name of the employee with the most orders?
+SELECT LASTNAME, MAX(NOrders)
+FROM (SELECT Orders.EmployeeID AS EmployeeID, Employees.LastName AS LASTNAME, COUNT(*) AS NOrders FROM [Orders]
+JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+GROUP BY Orders.EmployeeID)
+
+Ans = Peacock
+
+3. What product was ordered the most by customers in Germany?
+SELECT PID, PName, MAX(NOrders) 
+FROM (SELECT Products.ProductID AS PID, Customers.CustomerID AS CID, Products.ProductName AS PName, COUNT(*) AS NOrders
+FROM [Customers]
+JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
+JOIN Products ON OrderDetails.ProductID = Products.ProductID
+WHERE Country == 'Germany'
+GROUP BY Products.ProductID)
+
+Ans = Gorgonzola Telino
